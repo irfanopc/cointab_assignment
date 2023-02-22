@@ -1,0 +1,100 @@
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MySQL Data in EJS</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      // Fetch users button
+      $('button#fetch-users').click(function() {
+        $.ajax({
+          url: 'https://randomuser.me/api/',
+          dataType: 'json',
+          success: function(data) {
+            var user = data.results[0];
+            $.ajax({
+              url: '/fetch-users',
+              method: 'POST',
+              data: {
+                gender: user.gender,
+                title: user.name.title,
+                first_name: user.name.first,
+                last_name: user.name.last,
+                street_number: user.location.street.number,
+                street_name: user.location.street.name,
+                city: user.location.city,
+                state: user.location.state,
+                country: user.location.country,
+                postcode: user.location.postcode,
+                latitude: user.location.coordinates.latitude,
+                longitude: user.location.coordinates.longitude,
+                timezone_offset: user.location.timezone.offset,
+                timezone_description: user.location.timezone.description,
+                email: user.email,
+                username: user.login.username,
+                password: user.login.password,
+                salt: user.login.salt,
+                md5: user.login.md5,
+                sha1: user.login.sha1,
+                sha256: user.login.sha256,
+                dob_date: user.dob.date,
+                dob_age: user.dob.age,
+                registered_date: user.registered.date,
+                registered_age: user.registered.age,
+                phone: user.phone,
+                cell: user.cell,
+                ssn_name: user.id.name,
+                ssn_value: user.id.value,
+                picture_large: user.picture.large,
+                picture_medium: user.picture.medium,
+                picture_thumbnail: user.picture.thumbnail,
+                nat: user.nat
+              },
+              success: function(data) {
+                alert('User added successfully.');
+              },
+              error: function(xhr, status, error) {
+                alert('Error adding user: ' + error);
+              }
+            });
+          },
+          error: function(xhr, status, error) {
+            alert('Error fetching user: ' + error);
+          }
+        });
+      });
+
+      // Delete users button
+      $('button#delete-users').click(function() {
+        if (confirm("Are you sure you want to delete all users?")) {
+          $.ajax({
+            url: '/delete-users',
+            method: 'POST',
+            success: function(data) {
+              alert('All users deleted successfully.');
+            },
+            error: function(xhr, status, error) {
+              alert('Error deleting users: ' + error);
+            }
+          });
+        }
+      });
+
+      // User details button
+      $('button#user-details').click(function() {
+        window.location.href = '/user-details'; // redirect to user details page
+      });
+});
+</script>
+</head>
+<body>
+  <h1>MySQL Data:</h1>
+  <button id="fetch-users">Fetch Users</button>
+  <button id="delete-users">Delete Users</button>
+  <button id="user-details">User Details</button>
+</body>
+</html>
+

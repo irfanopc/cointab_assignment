@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>User Details</title>
+  <style>
+    table {
+      margin-left: 400px;
+
+      text-align: center;
+      border-collapse: collapse;
+     }
+
+    td,
+    th {
+      border: 1px solid;
+    }
+
+    #pagination {
+      text-align: center;
+    }
+
+    body {
+      align-items: center;
+      text-align: center;
+    }
+  </style>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      var page = 1; // initialize the current page to 1
+
+      function loadUsers() {
+        $.ajax({
+          url: '/user-details?page=' + page, // pass the current page number as a query parameter
+          method: 'GET',
+          dataType: 'html', // use 'html' instead of 'json'
+          success: function (html) { // use 'html' instead of 'users'
+            $('#user-list').html(html); // replace the user list with the new data
+            $('#page-number').html(page + ' of ' + pages); // update the page number in the UI
+          },
+          error: function (xhr, status, error) {
+            alert('Error loading user data: ' + error);
+          }
+        });
+      }
+
+      // Load users on page load
+      // loadUsers();
+
+      // Pagination buttons
+      $('button#prev-page').click(function () {
+        if (page > 1) {
+          page--;
+          loadUsers();
+        }
+      });
+
+      $('button#next-page').click(function () {
+        page++;
+        loadUsers();
+      });
+    });
+
+  </script>
+</head>
+
+<body>
+  <h1>User Details</h1>
+
+  <div id="user-table">
+    <% if (data.length) { %>
+      <table>
+        <thead>
+          <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>country</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% data.forEach((row)=> { %>
+            <tr>
+              <td>
+                <%= row.first_name %>
+              </td>
+              <td>
+                <%= row.last_name %>
+              </td>
+              <td>
+                <%= row.email %>
+              </td>
+              <td>
+                <%= row.country %>
+              </td>
+            </tr>
+            <% }); %>
+        </tbody>
+      </table>
+      <% } else { %>
+        <p>No data found.</p>
+        <% } %>
+  </div>
+
+
+  <div id="pagination">
+    <!-- <button id="prev-page">Prev</button>
+      <span id="page-number"><%= current %> of <%= pages %></span>
+      <button id="next-page">Next</button> -->
+    <%if(current !=1 && previousPage !=1){ %>
+      <a href="/user-details/?page=1">1</a>
+
+      <% } %>
+        <%if(hasPrevoiuspage){ %>
+          <a href="/user-details/?page=<%=previousPage%>">
+            <%=previousPage%>
+          </a>
+          <% } %>
+
+            <a href="/user-details/?page=<%=current%>">
+              <%=current%>
+            </a>
+            <%if(hasNextpage){ %>
+              <a href="/user-details/?page=<%=nextPage%>">
+                <%=nextPage%>
+              </a>
+              <% } %>
+                <% if(lastPage !=current && nextPage!=lastPage){ %>
+                  <a href="/user-details/?page=<%=lastPage%>">
+                    <%=lastPage%>
+                  </a>
+                  <% } %>
+  </div>
+</body>
+
+</html>
